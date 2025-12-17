@@ -1,0 +1,138 @@
+<h1>{{ title() }}</h1>
+
+<nav class="role-switch">
+  <button
+    (click)="setRole('user')"
+    [class.active]="role() === 'user'">
+    Customer
+  </button>
+  <button
+    (click)="setRole('chef')"
+    [class.active]="role() === 'chef'">
+    Pizza Chef
+  </button>
+</nav>
+
+@if (role() === 'user') {
+  <nav class="tabs">
+    <button
+      (click)="setView('new')"
+      [class.active]="view() === 'new'">
+      New Order
+    </button>
+    <button
+      (click)="setView('status')"
+      [class.active]="view() === 'status'">
+      Status Order
+    </button>
+  </nav>
+}
+
+@if (role() === 'chef') {
+  <nav class="tabs">
+    <button
+      (click)="setView('queue')"
+      [class.active]="view() === 'queue'">
+      Pizza Chef Queue
+    </button>
+  </nav>
+}
+
+@if (role() === 'user') {
+
+  <!-- Section 1: New Order -->
+  @if (view() === 'new') {
+    <section>
+      <h2>New Order</h2>
+      <label>
+        Pizza Type:
+        <input
+          [ngModel]="pizzaType()"
+          (ngModelChange)="pizzaType.set($event)"
+          placeholder="Margherita">
+      </label>
+      <button (click)="createOrder()">Order</button>
+
+      @if (createdOrderCode()) {
+        <div>
+          <p>Order Code Created: <strong>{{ createdOrderCode() }}</strong></p>
+        </div>
+      }
+    </section>
+  }
+
+  <!-- Section 2: Status Order -->
+  @if (view() === 'status') {
+    <section>
+      <h2>Status Order</h2>
+      <label>
+        Order Code:
+        <input
+          [ngModel]="statusOrderCode()"
+          (ngModelChange)="statusOrderCode.set($event)">
+      </label>
+      <button (click)="loadStatus()">Load Order Status</button>
+
+      @if (currentOrder()) {
+        <div>
+          <p>Pizza: {{ currentOrder()?.pizzaType }}</p>
+          <p>Status: {{ currentOrder()?.status }}</p>
+        </div>
+      }
+    </section>
+  }
+}
+
+@if (role() === 'chef') {
+
+  @if (view() === 'queue') {
+    <section>
+      <h2>Pizza Chef Orders Queue</h2>
+      <button (click)="loadQueue()">Load Queue</button>
+
+      @if (queue().length === 0) {
+        <p>No Orders in Queue</p>
+      } @else {
+        <ul>
+          @for (order of queue(); track order.orderCode) {
+            <li
+              (click)="selectFromQueue(order.orderCode)"
+              [class.selected]="order.orderCode === selectedOrderCode()"
+              [class.status-pending]="order.status === 'PENDING'"
+              [class.status-in-progress]="order.status === 'IN_PROGRESS'"
+              [class.status-ready]="order.status === 'READY'"
+              [class.status-completed]="order.status === 'COMPLETED'">
+
+              {{ order.orderCode }} - {{ order.pizzaType }} - {{ order.status }}
+            </li>
+          }
+        </ul>
+      }
+
+      <div class="queue-actions">
+        <label>
+          Order Selected:
+          <input
+            [ngModel]="selectedOrderCode()"
+            (ngModelChange)="selectedOrderCode.set($event)">
+        </label>
+
+        <div class="queue-actions-row">
+          <button (click)="assignSelected()" [disabled]="!canAssign()">
+            Take Charge
+          </button>
+          <button (click)="markReadySelected()" [disabled]="!canMarkReady()">
+            Mark Ready
+          </button>
+          <button (click)="completeSelected()" [disabled]="!canComplete()">
+            Complete Order
+          </button>
+        </div>
+      </div>
+    </section>
+  }
+}
+
+@if (errorMessage()) {
+  <p style="color:red">{{ errorMessage() }}</p>
+}
