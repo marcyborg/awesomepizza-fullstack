@@ -7,7 +7,7 @@ applicazione: l'interfaccia chiama le API REST `/api/orders`.
 
 | Componente | Cartella | Tecnologie |
 | --- | --- | --- |
-| API e logica ordini | [`backend/`](backend/README.md) | Java 21, Spring Boot 3.5.7, JPA, H2, Swagger |
+| API e logica ordini | [`backend/`](backend/README.md) | Java 21, Spring Boot 3.5.7, JPA, PostgreSQL, Flyway, Swagger |
 | Interfaccia cliente e pizzaiolo | [`frontend/`](frontend/README.md) | Angular 21, TypeScript, HttpClient, signals |
 | Avvio integrato | [`compose.yaml`](compose.yaml) | Docker Compose, Nginx e proxy API |
 
@@ -22,13 +22,15 @@ attivo (`IN_PROGRESS` o `READY`) anche in caso di assegnazioni simultanee.
 La selezione Customer / Pizza Chef è una scelta dell'interfaccia, non
 un'autenticazione. Le API non hanno controllo degli accessi: questa è una demo,
 non un sistema da esporre a Internet senza ulteriori protezioni. Il database
-H2 predefinito è in memoria: riavviando il backend si perdono gli ordini.
+predefinito è PostgreSQL persistente, con schema gestito da Flyway.
 
 ## Avvio locale
 
 Prerequisiti: JDK 21, Node.js 22.12+ (serie 22) e npm. È disponibile il
 Maven Wrapper; in alternativa usa Maven 3.9+ installato. Dalla radice del
-repository apri due terminali:
+repository prepara PostgreSQL e le variabili `DB_URL`, `DB_USER` e
+`DB_PASSWORD`, come descritto nella [guida database](docs/POSTGRESQL.md),
+poi apri due terminali:
 
 ```bash
 cd backend
@@ -36,6 +38,11 @@ cd backend
 ```
 
 Su PowerShell, usa `.\mvnw.cmd spring-boot:run`.
+
+Per una demo temporanea senza PostgreSQL usa invece
+`./mvnw spring-boot:run -Dspring-boot.run.profiles=h2`: solo questo profilo
+perde gli ordini quando il processo termina. I test ordinari scelgono H2
+esplicitamente e non richiedono credenziali.
 
 ```bash
 cd frontend
@@ -50,7 +57,8 @@ globalmente: gli script npm usano la versione del progetto.
 
 ## Avvio con Docker
 
-Dalla radice esegui:
+Dalla radice copia `.env.example` in `.env` e imposta una password privata
+non vuota in `DB_PASSWORD`; `.env` non deve essere committato. Poi esegui:
 
 ```bash
 docker compose up --build
@@ -61,9 +69,13 @@ Il frontend è servito da Nginx su `http://localhost:4200/`; le richieste
 `/api/` sono inoltrate al servizio `backend:8080`. Nessun indirizzo interno
 Docker viene usato direttamente dal browser.
 
-Per fermare i servizi esegui `docker compose down`. Anche in Docker il
-database è in memoria: gli ordini non persistono al riavvio del backend.
-Le porte 4200 e 8080 devono essere libere; fermare prima altri progetti che
+PostgreSQL 16 usa il volume nominato `postgres_data`. Per fermare i servizi
+esegui `docker compose down`: gli ordini restano disponibili al successivo
+avvio. **Non usare `docker compose down -v` se vuoi conservare i dati**:
+rimuove anche il volume. La persistenza non sostituisce un backup.
+
+Le porte 4200, 8080 e 5432 devono essere libere; puoi cambiare la porta host
+del database con `DB_PORT` in `.env`. Fermare prima altri progetti che
 usano le stesse porte, come l'applicazione degli eventi cittadini.
 
 ## Test e compilazione
@@ -86,6 +98,11 @@ Gli esiti e i limiti della verifica locale sono in
 separatamente backend e frontend per push e pull request. La build frontend
 mantiene la configurazione Angular originale con prerender della pagina e
 bundle server; Docker serve la parte browser con Nginx.
+
+La CI comprende inoltre un job PostgreSQL 16 con migrazioni, test API,
+persistenza dopo il riavvio dell'applicazione, concorrenza fra due istanze e
+verifica dopo il riavvio del container database. Per eseguire questi test
+localmente consulta [PostgreSQL e Flyway](docs/POSTGRESQL.md).
 
 ## Organizzazione Git
 
