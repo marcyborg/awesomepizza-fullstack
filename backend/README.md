@@ -53,7 +53,7 @@ Non è previsto un import automatico di database preesistenti.
 ## Schema e migrazioni
 
 Flyway applica `db/migration/V1__create_order_schema.sql` e
-`V2__seed_chef_station.sql` prima dell'inizializzazione JPA. Hibernate usa
+`V2__initialize_chef_station.sql` prima dell'inizializzazione JPA. Hibernate usa
 `ddl-auto: validate`: verifica lo schema senza modificarlo. Flyway valida i
 checksum, non adotta automaticamente schemi non vuoti (`baseline-on-migrate:
 false`) e impedisce `clean`.

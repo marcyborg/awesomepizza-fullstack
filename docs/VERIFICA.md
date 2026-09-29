@@ -35,6 +35,10 @@ Docker non è disponibile nell'ambiente di verifica: i Dockerfile e il
 Compose sono stati corretti, ma le immagini e l'avvio dei container non sono
 stati eseguiti. L'esito della CI remota va verificato nella scheda Actions.
 
-Restano i limiti dell'applicazione originale: H2 in memoria, assenza di
+Questa verifica descrive lo stato precedente all'introduzione di PostgreSQL
+e Flyway. Per la nuova configurazione persistente e i relativi test consulta
+[PostgreSQL e Flyway](POSTGRESQL.md).
+
+Restavano i limiti dell'applicazione originale: H2 in memoria, assenza di
 autenticazione/autorizzazione, validazioni ed errori strutturati da completare
 e controllo di concorrenza da rafforzare nella presa in carico degli ordini.
