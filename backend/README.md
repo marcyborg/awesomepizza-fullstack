@@ -1,141 +1,45 @@
-# AwesomePizza – Backend
+# AwesomePizza | Backend Spring Boot
 
-REST backend for managing pizza orders in the AwesomePizza application.
-It exposes APIs to create orders, check their status, and manage the pizza chef’s queue (with states PENDING, IN_PROGRESS, READY, COMPLETED).
-## Technologies
+Le API di questa cartella sono utilizzate dal
+[frontend Angular collegato](../frontend/README.md). Per avviare l'intera
+applicazione consulta il [README principale](../README.md).
 
-- Java 21
-- Spring Boot 3.x (Web, Data JPA)
-- H2 Database (in-memory, dev)
-- Maven
-- Springdoc OpenAPI (Swagger UI)
-- (Optional) Docker / Docker Compose
+Java 21 e Spring Boot 3.5.7, con JPA, H2 in memoria e Swagger. Il database
+è temporaneo: gli ordini vengono persi a ogni riavvio del processo.
 
-## Requirements
+## Avvio e test
 
-- JDK 21 installed
+```bash
+./mvnw test
+./mvnw spring-boot:run
+```
 
-- Maven 3.6+ (mvn -v to verify)
+Su PowerShell usa `.\mvnw.cmd`; se hai Maven installato, puoi usare `mvn`.
+Le API rispondono su `http://localhost:8080/api/orders` e Swagger su
+`http://localhost:8080/swagger-ui/index.html`.
 
-- (Optional) Docker and Docker Compose
+## API usate da Angular
 
-## Project Structure
+| Metodo | Endpoint | Funzione |
+| --- | --- | --- |
+| POST | `/api/orders` | Crea ordine con body `{"pizzaType":"Margherita"}` e restituisce `{"orderCode":"ORD-..."}` |
+| GET | `/api/orders/{code}` | Dettaglio e stato ordine |
+| GET | `/api/orders/queue` | Coda ordinata per creazione, inclusi gli ordini completati |
+| PUT | `/api/orders/{code}/assign` | Passa da `PENDING` a `IN_PROGRESS` se non ci sono altri ordini attivi |
+| PUT | `/api/orders/{code}/ready` | Passa da `IN_PROGRESS` a `READY` |
+| PUT | `/api/orders/{code}/complete` | Passa da `READY` a `COMPLETED` |
 
-- `com.awesome.awesomepizza`
-    - `AwesomePizzaApplication.java`
-    - `config/` – configurazione CORS
-    - `controller/` – `OrderController`
-    - `domain/` – `Order`, `OrderStatus`
-    - `dto/` – `OrderRequest`, `OrderResponse`
-    - `repository/` – `OrderRepository`
-    - `service/` – `OrderService`
+La logica degli ordini è stata mantenuta dai sorgenti originali. Non sono
+implementati JWT o autorizzazioni: prima di un utilizzo in produzione servono
+autenticazione, validazioni ed errori strutturati, persistenza e gestione
+transazionale della concorrenza per la presa in carico.
 
-## Run Application (without Docker)
+## Collegamento al frontend
 
-From the backend project root:
+In sviluppo il proxy Angular inoltra `/api/**` alla porta 8080. In Docker
+Nginx inoltra `/api/` al servizio `backend`. Il CORS originale consente
+`http://localhost:4200`; il proxy rende le chiamate del browser same-origin.
 
-- `mvn clean spring-boot:run`
-
-
-The application will be available at:
-
-- API base: `http://localhost:8080`
-- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
-
-## Order Model
-
-Entity `Order` (tabella `pizza_order`):
-
-- `id: UUID`
-- `pizzaType: String`
-- `status: OrderStatus` (enum: `PENDING`, `IN_PROGRESS`, `READY`, `COMPLETED`)
-- `orderCode: String` (es. `ORD-AB12CD34`)
-- `createdAt: LocalDateTime`
-
-
-## Exposed APIs
-
-Base path: `/api/orders`
-
-- **POST** `/api/orders`  
-  Creates a new order.
-  #### Request body:
-        {"pizzaType": "Margherita"}
-
-  #### Response:
-        { "orderCode": "ORD-AB12CD34" }
-
-
-- **GET** `/api/orders/{code}`  
-  Returns the order details (including `status`).
-
-- **GET** `/api/orders/queue`  
-  Returns all orders for the pizza chef, ordered by `createdAt` (PENDING, IN_PROGRESS, READY, COMPLETED).
-
-- **PUT** `/api/orders/{code}/assign`  
-  Set the status to `IN_PROGRESS`.  
-  Constraint: **only one order at a time** is allowed in `IN_PROGRESS/READY`.
-  If there is already an active order, an `IllegalStateException` is thrown.
-
-- **PUT** `/api/orders/{code}/ready`  
-  Set the status to `READY`.  
-  Constraint: the order must be `IN_PROGRESS`.
-
-- **PUT** `/api/orders/{code}/complete`  
-  Set the status to `COMPLETED`.  
-  Constraint: the order must be `READY`.
-
-## Order Flow
-
-1. Customer creates an order → initial state `PENDING`.
-2. Pizza chef sees the queue at `/queue`.
-3. Pizza Chef:
-- `assign` → `IN_PROGRESS`
-- `ready` → `READY`
-- `complete` → `COMPLETED`
-4. The customer can check the status with `GET /api/orders/{code}`.
-
-## Development Profile
-
-- In the development environment, an in-memory H2 database is used (no extra DB configuration required).
-
-- For real databases (PostgreSQL/MySQL), uncomment the driver and properties in `application.yml`.
-
-## Test
-
-Run test:
-
-- `mvn test`
-
-Controller and service tests are included using JUnit 5 and Mockito-based mocking.
-
-
----
-
-## Optional: Docker run
-
-The project includes a `Dockerfile` to build a container image for the backend.
-
-### Build backend image
-
-From the backend project root:
-- `docker build -t awesomepizza-backend .`
-
-### Run backend container
-
-From the backend project root:
-- `docker run -p 8080:8080 awesomepizza-backend`
-
-
-The backend will be reachable at http://localhost:8080, just like in the traditional run.
-
-
-##### docker-compose
-You can run backend and frontend together using `docker-compose.yml`:
-from the root folder that contains both projects, run:` docker-compose up` 
-
-
-
-
-
-
+Il Dockerfile usa uno stage Maven con JDK 21 per produrre il JAR e uno stage
+JRE per eseguirlo. Docker Compose si trova solo nella radice del
+monorepository, non in questa cartella.

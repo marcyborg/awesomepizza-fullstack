@@ -1,0 +1,34 @@
+# Maven / Java
+**/target/
+*.class
+*.jar
+*.war
+
+# Node / Angular generated output
+**/node_modules/
+**/dist/
+**/out-tsc/
+**/.angular/
+**/coverage/
+**/.cache/
+*.tsbuildinfo
+frontend/src/**/*.js
+frontend/src/**/*.js.map
+frontend/src/**/*.mjs
+
+# Runtime data and secrets
+**/data/
+*.mv.db
+*.trace.db
+*.log
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
