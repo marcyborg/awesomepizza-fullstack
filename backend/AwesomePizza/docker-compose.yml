@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: awesomepizza-backend
+    container_name: awesomepizza-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    networks:
+      - awesomepizza-net
+
+  frontend:
+    build:
+      context: ./awesome-pizza-ui
+      dockerfile: Dockerfile
+    image: awesomepizza-frontend
+    container_name: awesomepizza-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - awesomepizza-net
+
+networks:
+  awesomepizza-net:
+    driver: bridge

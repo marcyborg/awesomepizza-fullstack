@@ -1,0 +1,48 @@
+#example file for db configuration
+
+#spring:
+#  datasource:
+#    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
+#    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:testdb}
+#    username: ${SPRING_DATASOURCE_USERNAME:sa}
+#    password: ${SPRING_DATASOURCE_PASSWORD:}
+#  jpa:
+#    hibernate:
+#      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+#    database-platform: ${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.H2Dialect}
+#    show-sql: ${SPRING_JPA_SHOW_SQL:true}
+#    properties:
+#      hibernate:
+#        format_sql: true
+#
+#---
+#
+#spring:
+#  config:
+#    activate:
+#      on-profile: postgres
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://db:5432/eventdb
+#    username: eventuser
+#    password: eventpass
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#
+#---
+#
+#spring:
+#  config:
+#    activate:
+#      on-profile: h2
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:mem:testdb
+#    username: sa
+#    password:
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    database-platform: org.hibernate.dialect.H2Dialect
