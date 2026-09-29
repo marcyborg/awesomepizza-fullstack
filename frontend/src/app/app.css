@@ -1,0 +1,227 @@
+:host {
+  display: block;
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #222;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.role-switch {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.role-switch button {
+  flex: 1 1 0;
+  padding: 0.5rem 0.7rem;
+  background-color: #e53935;   
+  color: #fff;
+  border-radius: 999px;
+  border: 1px solid #e53935;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.role-switch button.active {
+  background-color: #b71c1c;  
+  border-color: #b71c1c;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tabs button {
+  flex: 1 1 0;
+  padding: 0.4rem 0.6rem;
+  background-color: #f0f0f5;  
+  color: #333;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.tabs button.active {
+  background-color: #ffffff;   
+  color: #e53935;
+  border-color: #e53935;
+}
+
+section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: #f8f8fb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+input[type="text"],
+input[type="search"],
+input:not([type]) {
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #e53935;
+  box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.15);
+}
+
+button {
+  padding: 0.5rem 1.2rem;
+  border-radius: 4px;
+  border: none;
+  background-color: #e53935;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+button:hover {
+  background-color: #c62828;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+section > button {
+  margin-top: 0.75rem;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.75rem 0 0;
+}
+
+li {
+  padding: 0.4rem 0.6rem;
+  margin-bottom: 0.35rem;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.selected {
+  background-color: #ffe0e0;
+}
+
+.status-pending {
+  border-left: 4px solid #ffb74d;   
+}
+
+.status-in-progress {
+  border-left: 4px solid #42a5f5;  
+}
+
+.status-ready {
+  border-left: 4px solid #66bb6a;   
+}
+
+.status-completed {
+  border-left: 4px solid #9e9e9e;   
+  opacity: 0.7;
+}
+
+.queue-actions {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.queue-actions label {
+  max-width: 260px;
+}
+
+.queue-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;         
+}
+
+.queue-actions-row button {
+  flex: 0 0 auto;      
+}
+
+p[style*="color:red"] {
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  :host {
+    margin: 1.5rem auto;
+    padding: 0 0.5rem;
+  }
+
+  section {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .tabs,
+  .role-switch {
+    flex-direction: column;
+  }
+
+  .tabs button,
+  .role-switch button {
+    flex: 1 1 auto;
+  }
+
+  .queue-actions-row {
+    flex-direction: column;
+  }
+
+  .queue-actions-row button {
+    width: 100%;
+  }
+}
