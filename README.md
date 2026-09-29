@@ -15,8 +15,9 @@ applicazione: l'interfaccia chiama le API REST `/api/orders`.
 
 Il cliente crea un ordine e riceve un codice `ORD-...` con cui consultarne lo
 stato. Il pizzaiolo carica la coda cronologica e seleziona un ordine:
-`PENDING` → `IN_PROGRESS` → `READY` → `COMPLETED`. La logica originale consente
-un solo ordine attivo (`IN_PROGRESS` o `READY`) alla volta.
+`PENDING` → `IN_PROGRESS` → `READY` → `COMPLETED`. Le transizioni acquisiscono
+un lock sulla postazione condivisa nel database per mantenere un solo ordine
+attivo (`IN_PROGRESS` o `READY`) anche in caso di assegnazioni simultanee.
 
 La selezione Customer / Pizza Chef è una scelta dell'interfaccia, non
 un'autenticazione. Le API non hanno controllo degli accessi: questa è una demo,
@@ -66,6 +67,9 @@ Le porte 4200 e 8080 devono essere libere; fermare prima altri progetti che
 usano le stesse porte, come l'applicazione degli eventi cittadini.
 
 ## Test e compilazione
+
+Le correzioni e i test di regressione sono descritti in
+[`docs/CORREZIONI-PR.md`](docs/CORREZIONI-PR.md).
 
 ```bash
 cd backend
