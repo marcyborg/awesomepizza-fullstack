@@ -20,6 +20,10 @@ frontend/src/**/*.mjs
 **/data/
 *.mv.db
 *.trace.db
+**/backups/
+**/pgdata/
+*.dump
+*.backup
 *.log
 .env
 .env.*
