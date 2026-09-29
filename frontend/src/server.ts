@@ -10,7 +10,12 @@ import { join } from 'node:path';
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
-const angularApp = new AngularNodeAppEngine();
+// NG_ALLOWED_HOSTS may override this explicit local allowlist for a deployment.
+// Do not use "*" or trust arbitrary forwarded headers.
+const angularApp = new AngularNodeAppEngine({
+  allowedHosts: ['localhost', '127.0.0.1'],
+  trustProxyHeaders: false,
+});
 
 /**
  * Example Express Rest API endpoints can be defined here.

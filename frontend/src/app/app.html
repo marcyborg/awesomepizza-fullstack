@@ -1,45 +1,28 @@
 <h1>{{ title() }}</h1>
 
 <nav class="role-switch">
-  <button
-    (click)="setRole('user')"
-    [class.active]="role() === 'user'">
+  <button (click)="setRole('user')" [disabled]="busy()" [class.active]="role() === 'user'">
     Customer
   </button>
-  <button
-    (click)="setRole('chef')"
-    [class.active]="role() === 'chef'">
+  <button (click)="setRole('chef')" [disabled]="busy()" [class.active]="role() === 'chef'">
     Pizza Chef
   </button>
 </nav>
 
 @if (role() === 'user') {
   <nav class="tabs">
-    <button
-      (click)="setView('new')"
-      [class.active]="view() === 'new'">
-      New Order
-    </button>
-    <button
-      (click)="setView('status')"
-      [class.active]="view() === 'status'">
-      Status Order
-    </button>
+    <button (click)="setView('new')" [class.active]="view() === 'new'">New Order</button>
+    <button (click)="setView('status')" [class.active]="view() === 'status'">Status Order</button>
   </nav>
 }
 
 @if (role() === 'chef') {
   <nav class="tabs">
-    <button
-      (click)="setView('queue')"
-      [class.active]="view() === 'queue'">
-      Pizza Chef Queue
-    </button>
+    <button (click)="setView('queue')" [class.active]="view() === 'queue'">Pizza Chef Queue</button>
   </nav>
 }
 
 @if (role() === 'user') {
-
   <!-- Section 1: New Order -->
   @if (view() === 'new') {
     <section>
@@ -49,13 +32,17 @@
         <input
           [ngModel]="pizzaType()"
           (ngModelChange)="pizzaType.set($event)"
-          placeholder="Margherita">
+          maxlength="255"
+          placeholder="Margherita"
+        />
       </label>
-      <button (click)="createOrder()">Order</button>
+      <button (click)="createOrder()" [disabled]="busy()">Order</button>
 
       @if (createdOrderCode()) {
         <div>
-          <p>Order Code Created: <strong>{{ createdOrderCode() }}</strong></p>
+          <p>
+            Order Code Created: <strong>{{ createdOrderCode() }}</strong>
+          </p>
         </div>
       }
     </section>
@@ -67,9 +54,7 @@
       <h2>Status Order</h2>
       <label>
         Order Code:
-        <input
-          [ngModel]="statusOrderCode()"
-          (ngModelChange)="statusOrderCode.set($event)">
+        <input [ngModel]="statusOrderCode()" (ngModelChange)="onStatusCodeChange($event)" />
       </label>
       <button (click)="loadStatus()">Load Order Status</button>
 
@@ -84,7 +69,6 @@
 }
 
 @if (role() === 'chef') {
-
   @if (view() === 'queue') {
     <section>
       <h2>Pizza Chef Orders Queue</h2>
@@ -101,8 +85,8 @@
               [class.status-pending]="order.status === 'PENDING'"
               [class.status-in-progress]="order.status === 'IN_PROGRESS'"
               [class.status-ready]="order.status === 'READY'"
-              [class.status-completed]="order.status === 'COMPLETED'">
-
+              [class.status-completed]="order.status === 'COMPLETED'"
+            >
               {{ order.orderCode }} - {{ order.pizzaType }} - {{ order.status }}
             </li>
           }
@@ -114,19 +98,18 @@
           Order Selected:
           <input
             [ngModel]="selectedOrderCode()"
-            (ngModelChange)="selectedOrderCode.set($event)">
+            [readonly]="busy()"
+            (ngModelChange)="onSelectedCodeChange($event)"
+          />
         </label>
+        <button (click)="loadSelected()" [disabled]="busy() || lookupLoading()">
+          Load Selected Order
+        </button>
 
         <div class="queue-actions-row">
-          <button (click)="assignSelected()" [disabled]="!canAssign()">
-            Take Charge
-          </button>
-          <button (click)="markReadySelected()" [disabled]="!canMarkReady()">
-            Mark Ready
-          </button>
-          <button (click)="completeSelected()" [disabled]="!canComplete()">
-            Complete Order
-          </button>
+          <button (click)="assignSelected()" [disabled]="!canAssign()">Take Charge</button>
+          <button (click)="markReadySelected()" [disabled]="!canMarkReady()">Mark Ready</button>
+          <button (click)="completeSelected()" [disabled]="!canComplete()">Complete Order</button>
         </div>
       </div>
     </section>
@@ -134,5 +117,5 @@
 }
 
 @if (errorMessage()) {
-  <p style="color:red">{{ errorMessage() }}</p>
+  <p role="alert" style="color: red">{{ errorMessage() }}</p>
 }

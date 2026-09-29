@@ -29,10 +29,21 @@ Le API rispondono su `http://localhost:8080/api/orders` e Swagger su
 | PUT | `/api/orders/{code}/ready` | Passa da `IN_PROGRESS` a `READY` |
 | PUT | `/api/orders/{code}/complete` | Passa da `READY` a `COMPLETED` |
 
-La logica degli ordini è stata mantenuta dai sorgenti originali. Non sono
-implementati JWT o autorizzazioni: prima di un utilizzo in produzione servono
-autenticazione, validazioni ed errori strutturati, persistenza e gestione
-transazionale della concorrenza per la presa in carico.
+Il tipo pizza è obbligatorio, non vuoto e lungo al massimo 255 caratteri;
+gli spazi iniziali/finali vengono rimossi prima del salvataggio. Input non
+valido restituisce 400, ordine inesistente 404 e transizione non consentita
+409, con body Problem Details. La creazione mantiene HTTP 200 per compatibilità.
+
+Tutte le transizioni sono transazionali e acquisiscono un lock pessimista
+sulla riga condivisa `chef_station`, inizializzata all'avvio; non si bloccano
+solo i singoli ordini. I nuovi codici usano un UUID completo dopo `ORD-` (40
+caratteri), con vincolo univoco nel database. I vecchi codici restano
+consultabili; non vengono rinumerati.
+
+Non sono implementati JWT o autorizzazioni: prima di un utilizzo in produzione
+servono autenticazione, persistenza, migrazioni e verifiche sul database scelto.
+Per dati persistenti preesistenti, verificare eventuali codici duplicati o tipi
+pizza nulli prima di applicare i nuovi vincoli.
 
 ## Collegamento al frontend
 

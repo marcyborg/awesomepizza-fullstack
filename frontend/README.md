@@ -28,6 +28,18 @@ npm run build
 I test usano Vitest. Il lockfile è versionato per rendere riproducibili le
 installazioni; `node_modules/`, `dist/` e cache Angular sono esclusi da Git.
 
+Il lockfile aggiornato risolve Angular 21.2.24 e aggiorna le dipendenze entro
+gli intervalli di versione esistenti, senza nuove versioni principali.
+La CI esegue anche `npm audit --omit=dev --audit-level=high`.
+Il server SSR accetta esplicitamente `localhost` e `127.0.0.1`; per un hostname
+di deployment usa `NG_ALLOWED_HOSTS` con una lista di nomi consentiti, senza
+wildcard. Gli header forwarded non sono considerati attendibili.
+
+Il dettaglio precedente viene cancellato quando cambia il codice o fallisce
+una ricerca. Le risposte di ricerche superate vengono ignorate; durante gli
+invii sono impedite operazioni duplicate. Nel campo “Order Selected”, usa
+“Load Selected Order” per caricare il codice digitato prima di una transizione.
+
 ## Comunicazione con Spring Boot
 
 `OrderService` chiama `/api/orders` mediante URL relativi. In sviluppo
