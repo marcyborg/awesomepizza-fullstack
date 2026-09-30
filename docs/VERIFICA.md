@@ -1,7 +1,7 @@
 # AwesomePizza | Verifica del monorepository
 
 Verifica locale eseguita il 30 settembre 2026, fuso Europe/Rome. I controlli
-coprono l'importazione dei repository, la compilazione e il collegamento fra
+coprono la struttura del progetto, la compilazione e il collegamento fra
 interfaccia Angular e API Spring Boot; non costituiscono un audit completo
 per l'impiego in produzione.
 
@@ -26,9 +26,8 @@ Le istruzioni e il proxy versionati usano invece 8080 e 4200.
 
 ## Git e limiti della verifica
 
-I repository originali sono importati mediante `git subtree add` senza
-squash; i loro commit restano raggiungibili. Il backend è normalizzato sotto
-`backend/`, il frontend sotto `frontend/`; gli originali remoti restano intatti.
+Il backend si trova sotto `backend/` e il frontend sotto `frontend/`.
+Entrambi sono gestiti nello stesso repository, con una cronologia Git condivisa.
 
 Sono esclusi build Java/JavaScript, dipendenze, cache, dati runtime e segreti.
 Docker non è disponibile nell'ambiente di verifica: i Dockerfile e il

@@ -112,15 +112,8 @@ localmente consulta [PostgreSQL e Flyway](docs/POSTGRESQL.md).
   log e JavaScript compilato non sono versionati.
 - **Dati riservati**: `.env` e chiavi private sono esclusi; non inserire
   credenziali nei sorgenti.
-- **Cronologia**: i due repository originali sono stati importati come
-  subtree senza squash, mantenendo i commit raggiungibili; poi il backend
-  è stato spostato dalla sottocartella `AwesomePizza/` a `backend/`.
-
-Il monorepository deriva da
-[`marcyborg/awesomepizza-backend`](https://github.com/marcyborg/awesomepizza-backend)
-e [`marcyborg/awesomepizza-frontend`](https://github.com/marcyborg/awesomepizza-frontend).
-Questi repository non sono stati eliminati, archiviati o modificati e non
-vengono sincronizzati automaticamente con il nuovo progetto.
+- **Progetto unico**: backend e frontend sono sviluppati, verificati e
+  rilasciati insieme in questo repository.
 
 ## Copia sul PC
 
@@ -131,5 +124,5 @@ cd C:\Users\Francesco\Documents\GitHub
 git clone https://github.com/marcyborg/awesomepizza-fullstack.git
 ```
 
-Entrambi i componenti sono nello stesso clone. Per lavorare sul nuovo progetto
-usa questo repository, anziché modificare separatamente i due originali.
+Entrambi i componenti sono nello stesso clone. Usa questo repository per
+sviluppare e aggiornare l'intera applicazione.
