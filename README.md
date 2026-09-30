@@ -143,3 +143,12 @@ sviluppare e aggiornare l'intera applicazione.
 
 Per aggiornare un clone esistente, conserva prima eventuali modifiche locali,
 poi esegui `git switch main` e `git pull --ff-only origin main`.
+
+## Licenza
+
+Il codice del progetto è distribuito con [licenza MIT](LICENSE),
+copyright 2026 Francesco Marchitelli. Il testo della licenza definisce
+permessi, condizioni e limitazioni di responsabilità.
+
+Le dipendenze mantengono le rispettive licenze; la licenza del progetto
+non sostituisce quelle di eventuali componenti o contenuti di terze parti.
