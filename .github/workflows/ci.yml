@@ -24,6 +24,58 @@ jobs:
           cache-dependency-path: backend/pom.xml
       - run: ./mvnw --batch-mode verify
 
+  postgres:
+    name: PostgreSQL migrations, persistence and concurrency
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: awesomepizza_test
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: ci-test-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U testuser -d awesomepizza_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      POSTGRES_IT_URL: jdbc:postgresql://localhost:5432/awesomepizza_test
+      POSTGRES_IT_USER: testuser
+      POSTGRES_IT_PASSWORD: ci-test-only
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+      - run: ./mvnw --batch-mode -Ppostgres-it verify
+      - name: Validate Compose configuration
+        run: DB_PASSWORD=ci-compose-only docker compose -f ../compose.yaml config --quiet
+      - name: Verify data survives PostgreSQL container restart
+        env:
+          PG_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          docker exec "$PG_CONTAINER" psql -U testuser -d awesomepizza_test -v ON_ERROR_STOP=1 \
+            -c "INSERT INTO pizza_order(id,pizza_type,status,order_code,created_at) VALUES ('00000000-0000-0000-0000-000000000001','Restart regression','PENDING','ORD-DB-RESTART',CURRENT_TIMESTAMP)"
+          docker restart "$PG_CONTAINER"
+          for attempt in $(seq 1 30); do
+            if docker exec "$PG_CONTAINER" pg_isready -U testuser -d awesomepizza_test; then
+              break
+            fi
+            sleep 1
+          done
+          count="$(docker exec "$PG_CONTAINER" psql -U testuser -d awesomepizza_test -At \
+            -c "SELECT count(*) FROM pizza_order WHERE order_code='ORD-DB-RESTART'")"
+          test "$count" = "1"
+
   frontend:
     name: Angular tests and build
     runs-on: ubuntu-latest

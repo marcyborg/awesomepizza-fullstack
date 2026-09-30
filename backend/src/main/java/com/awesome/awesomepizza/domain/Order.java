@@ -2,6 +2,8 @@ package com.awesome.awesomepizza.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -23,10 +25,13 @@ public class Order {
     @Column(nullable = false, length = 255)
     private String pizzaType;
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(nullable = false, length = 16)
     private OrderStatus status = OrderStatus.PENDING;
 
     @Column(nullable = false, unique = true, length = 40)
     private String orderCode;
+    @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     /**
