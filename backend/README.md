@@ -1,8 +1,9 @@
-# AwesomePizza | Backend Spring Boot
+# AwesomePizza | API ordini con Spring Boot e PostgreSQL
 
-Le API di questa cartella sono utilizzate dal
-[frontend Angular collegato](../frontend/README.md). Per avviare l'intera
-applicazione consulta il [README principale](../README.md).
+Componente backend dell'applicazione AwesomePizza: gestisce creazione,
+consultazione e avanzamento degli ordini con API REST e transazioni.
+È utilizzato dal [frontend Angular collegato](../frontend/README.md);
+per avviare l'intera applicazione consulta il [README principale](../README.md).
 
 Java 21 e Spring Boot 3.5.7, con JPA, PostgreSQL, Flyway e Swagger.
 PostgreSQL è il profilo predefinito; H2 in memoria è riservato ai test

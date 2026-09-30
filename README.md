@@ -1,15 +1,29 @@
-# AwesomePizza | Ordini pizza fullstack
+# AwesomePizza | Gestione ordini fullstack con Spring Boot e Angular
 
-Un unico progetto per creare ordini pizza, consultarne lo stato e gestire la
-coda del pizzaiolo. Il [backend Spring Boot](backend/README.md) e il
-[frontend Angular](frontend/README.md) sono due componenti della stessa
-applicazione: l'interfaccia chiama le API REST `/api/orders`.
+Applicazione fullstack dimostrativa per gestire gli ordini di una pizzeria,
+dalla richiesta del cliente al completamento da parte del pizzaiolo.
+Il [backend Spring Boot](backend/README.md) espone le API REST `/api/orders`
+utilizzate dal [frontend Angular](frontend/README.md); PostgreSQL conserva
+gli ordini e Flyway gestisce l'evoluzione dello schema.
 
 | Componente | Cartella | Tecnologie |
 | --- | --- | --- |
 | API e logica ordini | [`backend/`](backend/README.md) | Java 21, Spring Boot 3.5.7, JPA, PostgreSQL, Flyway, Swagger |
 | Interfaccia cliente e pizzaiolo | [`frontend/`](frontend/README.md) | Angular 21, TypeScript, HttpClient, signals |
 | Avvio integrato | [`compose.yaml`](compose.yaml) | Docker Compose, Nginx e proxy API |
+
+## Funzionalità e scelte tecniche
+
+- **Flusso cliente**: creazione dell'ordine e consultazione dello stato tramite
+  un codice univoco.
+- **Flusso pizzaiolo**: coda cronologica e transizioni controllate dalla presa
+  in carico al completamento.
+- **Integrità e concorrenza**: validazione degli input, errori Problem Details,
+  vincoli SQL e lock transazionali sulla postazione condivisa.
+- **Persistenza**: PostgreSQL con volume Docker e migrazioni versionate;
+  H2 selezionabile per test e demo temporanee.
+- **Verifica automatica**: test backend e frontend, integrazioni PostgreSQL
+  e build in [GitHub Actions](.github/workflows/ci.yml).
 
 ## Flusso dell'applicazione
 
@@ -75,8 +89,8 @@ avvio. **Non usare `docker compose down -v` se vuoi conservare i dati**:
 rimuove anche il volume. La persistenza non sostituisce un backup.
 
 Le porte 4200, 8080 e 5432 devono essere libere; puoi cambiare la porta host
-del database con `DB_PORT` in `.env`. Fermare prima altri progetti che
-usano le stesse porte, come l'applicazione degli eventi cittadini.
+del database con `DB_PORT` in `.env`. Prima dell'avvio verifica che altri
+servizi locali non usino le stesse porte.
 
 ## Test e compilazione
 
@@ -115,14 +129,17 @@ localmente consulta [PostgreSQL e Flyway](docs/POSTGRESQL.md).
 - **Progetto unico**: backend e frontend sono sviluppati, verificati e
   rilasciati insieme in questo repository.
 
-## Copia sul PC
+## Clonare e aggiornare il progetto
 
-Quando la cartella locale GitHub sarà nuovamente scrivibile:
+Clona il progetto in una cartella locale:
 
-```powershell
-cd C:\Users\Francesco\Documents\GitHub
+```bash
 git clone https://github.com/marcyborg/awesomepizza-fullstack.git
+cd awesomepizza-fullstack
 ```
 
 Entrambi i componenti sono nello stesso clone. Usa questo repository per
 sviluppare e aggiornare l'intera applicazione.
+
+Per aggiornare un clone esistente, conserva prima eventuali modifiche locali,
+poi esegui `git switch main` e `git pull --ff-only origin main`.

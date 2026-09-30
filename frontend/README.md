@@ -1,13 +1,13 @@
-# AwesomePizza | Frontend Angular
+# AwesomePizza | Interfaccia cliente e pizzaiolo con Angular
 
-Questa interfaccia è collegata al
-[backend Spring Boot](../backend/README.md) dello stesso monorepository.
-Il [README principale](../README.md) descrive l'avvio locale e integrato.
+Componente frontend dell'applicazione AwesomePizza: offre le viste Customer
+e Pizza Chef per creare ordini, consultare lo stato e gestire la coda.
+È collegato al [backend Spring Boot](../backend/README.md) dello stesso
+repository; il [README principale](../README.md) descrive l'avvio locale
+e integrato.
 
-Le dipendenze reali sono Angular 21, TypeScript e Vitest; la precedente
-documentazione Angular 17 non corrispondeva ai sorgenti importati.
-L'interfaccia offre le viste Customer e Pizza Chef per creare ordini,
-consultare lo stato e gestire la coda.
+Il frontend usa Angular 21, TypeScript, HttpClient e signals.
+I test sono eseguiti con Vitest.
 
 ## Avvio, test e build
 
